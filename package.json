@@ -1,0 +1,36 @@
+{
+  "name": "@renzp/build-info-webpack-plugin",
+  "version": "0.0.2",
+  "description": "将打包信息注入客户端环境变量中的webpack插件",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "tsup --watch src",
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renzp94/build-info-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "plugin"
+  ],
+  "author": "renzp <1074720760.qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/renzp94/build-info-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/renzp94/build-info-webpack-plugin#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.16",
+    "@types/webpack": "^5.28.0",
+    "tsup": "^5.11.13",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "webpack": "^5.68.0"
+  },
+  "publishConfig":{
+    "registry": "https://registry.npmjs.org"
+  }
+}
