@@ -1,6 +1,6 @@
 # @renzp/build-info-webpack-plugin
 
-将打包信息注入客户端环境变量中的webpack插件
+一款将打包信息打印在控制台的webpack插件
 
 ## Install
 
@@ -19,42 +19,16 @@ module.exports = {
 }
 ```
 
-`webpack-build-info.ts`
+### Options
+
 ```ts
-export interface ShowWebpackBuildInfoOptions {
+interface Options {
+  showName?:boolean
+  showVersion?:boolean
   nameBlockColor?: string
+  showTime?:boolean
   timeBlockColor?: string
+  showGit?:boolean
   gitBlockColor?: string
 }
-
-export interface WebpackBuildInfo {
-  name: string
-  version: string
-  branchName: string
-  lastCommitHash8: string
-  time: string
-}
-
-declare const WEBPACK_BUILD_INFO: WebpackBuildInfo
-
-export const showWebpackBuildInfo = (options?: ShowWebpackBuildInfoOptions) => {
-  const {
-    nameBlockColor = '#4170FF',
-    timeBlockColor = '#09b987',
-    gitBlockColor = '#e19c0e',
-  } = options ?? {}
-  if (WEBPACK_BUILD_INFO) {
-    console.log(
-      `%c${WEBPACK_BUILD_INFO.name} v${WEBPACK_BUILD_INFO.version}%c${WEBPACK_BUILD_INFO.time}%c${WEBPACK_BUILD_INFO.branchName} ${WEBPACK_BUILD_INFO.lastCommitHash8}`,
-      `background: ${nameBlockColor}; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;`,
-      `background: ${timeBlockColor}; color: #fff; padding: 2px 4px;`,
-      `background: ${gitBlockColor}; color: #fff; padding: 2px 4px; border-radius: 0 3px 3px 0;`
-    )
-  }
-}
-```
-
-`main.ts`
-```ts
-showWebpackBuildInfo()
 ```

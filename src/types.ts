@@ -6,8 +6,12 @@ export interface WebpackBuildInfo {
   time: string
 }
 
-export interface ShowWebpackBuildInfoOptions {
+export interface Options {
+  showName?:boolean
+  showVersion?:boolean
   nameBlockColor?: string
+  showTime?:boolean
   timeBlockColor?: string
+  showGit?:boolean
   gitBlockColor?: string
 }
