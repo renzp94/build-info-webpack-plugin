@@ -2,8 +2,16 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { Compilation, Compiler } from 'webpack'
 import { Options, WebpackBuildInfo } from './types'
 import { getBranchName, getLastCommitHash8 } from './utils'
-
 const pluginName = 'build-info-webpack-plugin'
+
+const yellow = (str: string) => {
+  const start = 33
+  const end = 39
+  const open = `\x1b[${start}m`
+  const close = `\x1b[${end}m`
+  const regex = new RegExp(`\\x1b\\[${end}m`, 'g')
+  return open + str.replace(regex, open) + close
+}
 
 const padStartZero = (num: number) => num.toString().padStart(2, '0')
 
@@ -40,15 +48,20 @@ class BuildInfoWebpackPlugin {
     let lastCommitHash8
     compiler.hooks.compilation.tap(pluginName, async (compilation: Compilation) => {
       HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapPromise(pluginName, async (data) => {
-        if (!pkg) {
-          pkg = await require(`${compiler.context}/package.json`)
+        try {
+          if (!pkg) {
+            pkg = await require(`${compiler.context}/package.json`)
+          }
+          if (!branchName) {
+            branchName = await getBranchName(compiler.context)
+          }
+          if (!lastCommitHash8) {
+            lastCommitHash8 = await getLastCommitHash8(compiler.context)
+          }
+        } catch (err) {
+          console.log(`${yellow(`WARNING[${pluginName}]: `)}${err.message.split('\n')[0]}`)
         }
-        if (!branchName) {
-          branchName = await getBranchName(compiler.context)
-        }
-        if (!lastCommitHash8) {
-          lastCommitHash8 = await getLastCommitHash8(compiler.context)
-        }
+
         const date = new Date()
         const time = `${date.getFullYear()}-${padStartZero(date.getMonth() + 1)}-${padStartZero(
           date.getDate()
@@ -86,4 +99,4 @@ class BuildInfoWebpackPlugin {
   }
 }
 
-export default BuildInfoWebpackPlugin
+module.exports = BuildInfoWebpackPlugin
