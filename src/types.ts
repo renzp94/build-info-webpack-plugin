@@ -7,11 +7,11 @@ export interface WebpackBuildInfo {
 }
 
 export interface Options {
-  showName?:boolean
-  showVersion?:boolean
+  showName?: boolean
+  showVersion?: boolean
   nameBlockColor?: string
-  showTime?:boolean
+  showTime?: boolean
   timeBlockColor?: string
-  showGit?:boolean
+  showGit?: boolean
   gitBlockColor?: string
 }

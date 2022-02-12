@@ -16,14 +16,15 @@ class BuildInfoWebpackPlugin {
   showGit: boolean
   gitBlockColor: string
 
-  constructor(Options? : Options){
+  constructor(Options?: Options) {
     const {
       showName = true,
-      showVersion = true, 
-      nameBlockColor = '#4170FF', 
-      showTime = true, timeBlockColor = '#09b987', 
-      showGit = true, 
-      gitBlockColor = '#e19c0e'
+      showVersion = true,
+      nameBlockColor = '#4170FF',
+      showTime = true,
+      timeBlockColor = '#09b987',
+      showGit = true,
+      gitBlockColor = '#e19c0e',
     } = Options ?? {}
     this.showName = showName
     this.showVersion = showVersion
@@ -54,7 +55,7 @@ class BuildInfoWebpackPlugin {
         )} ${padStartZero(date.getHours())}:${padStartZero(date.getMinutes())}:${padStartZero(
           date.getSeconds()
         )}`
-        const buildInfo:WebpackBuildInfo = {
+        const buildInfo: WebpackBuildInfo = {
           name: pkg?.name || pluginName,
           version: pkg?.version || '',
           branchName,
@@ -62,15 +63,16 @@ class BuildInfoWebpackPlugin {
           time,
         }
 
-        const msg = (this.showName || this.showVersion ?  '%c' : '') +  
-                    (this.showName ? buildInfo.name : '') +
-                    (this.showVersion ? ` v${buildInfo.version}` : '') +
-                    (this.showTime ? `%c${buildInfo.time}` : '') +
-                    (this.showGit ? `%c${buildInfo.branchName} ${buildInfo.lastCommitHash8}` : '')
+        const msg =
+          (this.showName || this.showVersion ? '%c' : '') +
+          (this.showName ? buildInfo.name : '') +
+          (this.showVersion ? ` v${buildInfo.version}` : '') +
+          (this.showTime ? `%c${buildInfo.time}` : '') +
+          (this.showGit ? `%c${buildInfo.branchName} ${buildInfo.lastCommitHash8}` : '')
         const nameBlock = `background: ${this.nameBlockColor}; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;`
         const timeBlock = `background: ${this.timeBlockColor}; color: #fff; padding: 2px 4px;`
         const gitBlock = `background: ${this.gitBlockColor}; color: #fff; padding: 2px 4px; border-radius: 0 3px 3px 0;`
-        
+
         data.html = data.html.replace(
           '</head>',
           `<script type="text/javascript">console.log('${msg}','${nameBlock}','${timeBlock}','${gitBlock}')</script>
@@ -81,7 +83,7 @@ class BuildInfoWebpackPlugin {
         return data
       })
     })
-}
+  }
 }
 
 export default BuildInfoWebpackPlugin
