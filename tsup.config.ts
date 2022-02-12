@@ -9,7 +9,11 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   // 生成d.ts
-  dts: 'src/types.ts',
+  dts: {
+    entry: {
+      index: 'src/types.ts',
+    },
+  },
   //   入口文件
   entry: ['src/index.ts'],
   outDir: 'lib',
