@@ -88,9 +88,7 @@ class BuildInfoWebpackPlugin {
 
         data.html = data.html.replace(
           '</head>',
-          `<script type="text/javascript">console.log('${msg}','${nameBlock}','${timeBlock}','${gitBlock}')</script>
-          </head>
-          `
+          `<script type="text/javascript">console.log('${msg}','${nameBlock}','${timeBlock}','${gitBlock}')</script></head>`
         )
 
         return data
