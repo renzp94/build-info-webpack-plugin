@@ -83,12 +83,18 @@ class BuildInfoWebpackPlugin {
           (this.showTime ? `%c${buildInfo.time}` : '') +
           (this.showGit ? `%c${buildInfo.branchName} ${buildInfo.lastCommitHash8}` : '')
         const nameBlock = `background: ${this.nameBlockColor}; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;`
-        const timeBlock = `background: ${this.timeBlockColor}; color: #fff; padding: 2px 4px;`
+        const timeBlock = `background: ${this.timeBlockColor}; color: #fff; padding: 2px 4px;margin-right: -1px;`
         const gitBlock = `background: ${this.gitBlockColor}; color: #fff; padding: 2px 4px; border-radius: 0 3px 3px 0;`
+
+        const logInfo =
+          `'${msg}'` +
+          (this.showName || this.showVersion ? `,'${nameBlock}'` : '') +
+          (this.showTime ? `,'${timeBlock}'` : '') +
+          (this.showGit ? `,'${gitBlock}'` : '')
 
         data.html = data.html.replace(
           '</head>',
-          `<script type="text/javascript">console.log('${msg}','${nameBlock}','${timeBlock}','${gitBlock}')</script></head>`
+          `<script type="text/javascript">console.log(${logInfo})</script></head>`
         )
 
         return data
