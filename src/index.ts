@@ -1,7 +1,25 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import { Compilation, Compiler } from 'webpack'
-import { Options, WebpackBuildInfo } from './types'
 import { getBranchName, getLastCommitHash8 } from './utils'
+
+export interface WebpackBuildInfo {
+  name: string
+  version: string
+  branchName: string
+  lastCommitHash8: string
+  time: string
+}
+
+export interface Options {
+  showName?: boolean
+  showVersion?: boolean
+  nameBlockColor?: string
+  showTime?: boolean
+  timeBlockColor?: string
+  showGit?: boolean
+  gitBlockColor?: string
+}
+
 const pluginName = 'build-info-webpack-plugin'
 
 const yellow = (str: string) => {
@@ -104,4 +122,4 @@ class BuildInfoWebpackPlugin {
   }
 }
 
-module.exports = BuildInfoWebpackPlugin
+export default BuildInfoWebpackPlugin
