@@ -12,5 +12,5 @@ export default defineConfig({
   dts: './src/index.ts',
   //   入口文件
   entry: ['src/index.ts'],
-  outDir: 'lib',
+  outDir: 'dist',
 })

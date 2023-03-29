@@ -1,12 +1,12 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import { Compilation, Compiler } from 'webpack'
-import { getBranchName, getLastCommitHash8 } from './utils'
+import type { Compilation, Compiler } from 'webpack'
+import { getBranchName, getFirstCommitHash8, utcToGmt } from './utils'
 
 export interface WebpackBuildInfo {
   name: string
   version: string
   branchName: string
-  lastCommitHash8: string
+  firstCommitHash8: string
   time: string
 }
 
@@ -63,7 +63,7 @@ class BuildInfoWebpackPlugin {
   apply(compiler: Compiler) {
     let pkg
     let branchName
-    let lastCommitHash8
+    let firstCommitHash8
     compiler.hooks.compilation.tap(pluginName, async (compilation: Compilation) => {
       HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapPromise(pluginName, async (data) => {
         try {
@@ -73,14 +73,14 @@ class BuildInfoWebpackPlugin {
           if (!branchName) {
             branchName = await getBranchName(compiler.context)
           }
-          if (!lastCommitHash8) {
-            lastCommitHash8 = await getLastCommitHash8(compiler.context)
+          if (!firstCommitHash8) {
+            firstCommitHash8 = await getFirstCommitHash8(compiler.context)
           }
         } catch (err) {
           console.log(`${yellow(`WARNING[${pluginName}]: `)}${err.message.split('\n')[0]}`)
         }
 
-        const date = new Date()
+        const date = utcToGmt(new Date())
         const time = `${date.getFullYear()}-${padStartZero(date.getMonth() + 1)}-${padStartZero(
           date.getDate()
         )} ${padStartZero(date.getHours())}:${padStartZero(date.getMinutes())}:${padStartZero(
@@ -90,17 +90,17 @@ class BuildInfoWebpackPlugin {
           name: pkg?.name || pluginName,
           version: pkg?.version || '',
           branchName,
-          lastCommitHash8,
+          firstCommitHash8,
           time,
         }
-        const showGit = this.showGit && (branchName || lastCommitHash8)
+        const showGit = this.showGit && (branchName || firstCommitHash8)
 
         const msg =
           (this.showName || this.showVersion ? '%c' : '') +
           (this.showName ? buildInfo.name : '') +
           (this.showVersion ? ` v${buildInfo.version}` : '') +
           (this.showTime ? `%c${buildInfo.time}` : '') +
-          (showGit ? `%c${buildInfo.branchName} ${buildInfo.lastCommitHash8}` : '')
+          (showGit ? `%c${buildInfo.branchName} ${buildInfo.firstCommitHash8}` : '')
         const nameBlock = `background: ${this.nameBlockColor}; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;`
         const timeBlock = `background: ${this.timeBlockColor}; color: #fff; padding: 2px 4px;margin-right: -1px;`
         const gitBlock = `background: ${this.gitBlockColor}; color: #fff; padding: 2px 4px; border-radius: 0 3px 3px 0;`
