@@ -113,7 +113,7 @@ class BuildInfoWebpackPlugin {
 
         data.html = data.html.replace(
           '</head>',
-          `<script type="text/javascript">console.log(${logInfo})</script></head>`
+          `<script type="text/javascript">var WEBPACK_BUILD_INFO=${JSON.stringify(buildInfo)}; console.log(${logInfo});</script></head>`
         )
 
         return data
