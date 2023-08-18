@@ -1,6 +1,6 @@
 {
   "name": "@renzp/build-info-webpack-plugin",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "一款将打包信息打印在控制台的webpack插件",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
