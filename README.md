@@ -27,7 +27,7 @@ npm i @renzp/build-info-webpack-plugin -D
 ```js
 import BuildInfoWebpackPlugin from '@renzp/build-info-webpack-plugin'
 module.exports = {
-    plugins: [BuildInfoWebpackPlugin]
+    plugins: [new BuildInfoWebpackPlugin()]
 }
 ```
 
@@ -35,6 +35,7 @@ module.exports = {
 
 ```ts
 interface Options {
+  html?: string
   showName?:boolean
   showVersion?:boolean
   nameBlockColor?: string
