@@ -24,10 +24,35 @@ npm i @renzp/build-info-webpack-plugin -D
 
 `webpack.config.js`
 
+`import`
 ```js
 import BuildInfoWebpackPlugin from '@renzp/build-info-webpack-plugin'
-module.exports = {
+
+export default {
     plugins: [new BuildInfoWebpackPlugin()]
+}
+```
+
+`require`
+```js
+const BuildInfoWebpackPlugin = require('@renzp/build-info-webpack-plugin')
+
+module.exports = {
+    plugins: [new BuildInfoWebpackPlugin.default()]
+}
+```
+
+如果使用的html模板名字不是`index.html`，则可通过`html`参数指定模板名称。注意是文件名称，不是文件路径。
+
+例如：
+  - html模板文件路径为：`./src/html/index.html`，则无需指定。
+  - html模板文件路径为：`./src/html/app.html`，则需要指定`html: 'app.html'`
+
+```js
+import BuildInfoWebpackPlugin from '@renzp/build-info-webpack-plugin'
+
+export default {
+    plugins: [new BuildInfoWebpackPlugin({ html: 'app.html'})]
 }
 ```
 
@@ -35,13 +60,21 @@ module.exports = {
 
 ```ts
 interface Options {
+  // html模板文件，默认为index.html，如果使用的html模板不是index.html，则可以使用该选项指定模板文件名称
   html?: string
+  // 是否显示项目名称(package.name)
   showName?:boolean
+  // 是否显示项目版本号(package.version)
   showVersion?:boolean
+  // 项目名称样式
   nameBlockColor?: string
+  // 是否显示打包时间
   showTime?:boolean
+  // 打包时间样式
   timeBlockColor?: string
+  // 是否显示git信息
   showGit?:boolean
+  // git信息样式
   gitBlockColor?: string
 }
 ```
