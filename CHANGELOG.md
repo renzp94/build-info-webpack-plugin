@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/renzp94/build-info-webpack-plugin/compare/v1.0.0...v1.0.1) (2024-05-17)
+
+
+### 其他
+
+* 更新使用说明 ([288f683](https://github.com/renzp94/build-info-webpack-plugin/commit/288f6837d206893a3129a2189287c289844847e8))
+* 更新README ([576299d](https://github.com/renzp94/build-info-webpack-plugin/commit/576299d22139f5f32740f5919da6f5c751976e22))
+
 ## [1.0.0](https://github.com/renzp94/build-info-webpack-plugin/compare/v0.0.11...v1.0.0) (2024-05-17)
 
 

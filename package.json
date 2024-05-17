@@ -1,6 +1,6 @@
 {
   "name": "@renzp/build-info-webpack-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "renzp <1074720760.qq.com>",
   "repository": {
     "type": "git",
