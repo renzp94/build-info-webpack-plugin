@@ -23,14 +23,9 @@
     "url": "https://github.com/renzp94/build-info-webpack-plugin/issues"
   },
   "description": "一款将打包信息打印在控制台的webpack插件",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "homepage": "https://github.com/renzp94/build-info-webpack-plugin#readme",
-  "keywords": [
-    "webpack",
-    "plugin"
-  ],
+  "keywords": ["webpack", "plugin"],
   "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -39,7 +34,9 @@
     "dev": "tsup --watch src",
     "build": "tsup",
     "release": "standard-version",
-    "pub": "npm run build && standard-version && npm publish"
+    "pub": "npm run build && standard-version && npm publish",
+    "play:webpack4": "cd playground/webpack4 && npm run dev",
+    "play:webpack5": "cd playground/webpack5 && npm run dev"
   },
   "types": "./dist/index.d.ts",
   "dependencies": {
