@@ -14,6 +14,9 @@
 
 一款将打包信息打印在控制台的webpack插件
 
+- `Webpack插件`: [build-info-webpack-plugin](https://github.com/renzp94/build-info-webpack-plugin)
+- `Vite插件`: [vite-plugin-build-info](https://github.com/renzp94/vite-plugin-build-info)
+
 ## Install
 
 ```sh
