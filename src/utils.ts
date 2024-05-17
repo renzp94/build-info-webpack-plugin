@@ -1,4 +1,4 @@
-import ChildProcess from 'child_process'
+import ChildProcess from 'node:child_process'
 /**
  * 获取当前分支名
  * @param cwd 项目当前目录
@@ -6,8 +6,15 @@ import ChildProcess from 'child_process'
  */
 export const getBranchName = (cwd: string): Promise<string> => {
   return new Promise((resolve) => {
-    ChildProcess.exec('git rev-parse --abbrev-ref HEAD', { cwd }, (err, stdout) =>
-      resolve(err ? '' : stdout.replace('*', '').replace('\n', '').replace('\n\r', ''))
+    ChildProcess.exec(
+      'git rev-parse --abbrev-ref HEAD',
+      { cwd },
+      (err, stdout) =>
+        resolve(
+          err
+            ? ''
+            : stdout.replace('*', '').replace('\n', '').replace('\n\r', ''),
+        ),
     )
   })
 }
@@ -19,16 +26,16 @@ export const getBranchName = (cwd: string): Promise<string> => {
 export const getFirstCommitHash8 = (cwd: string): Promise<string> => {
   return new Promise((resolve) => {
     ChildProcess.exec('git log -1 --format=%H', { cwd }, (err, stdout) =>
-      resolve(err ? '' : stdout.replace(/\s+$/, '').slice(0, 8))
+      resolve(err ? '' : stdout.replace(/\s+$/, '').slice(0, 8)),
     )
   })
 }
 /**
  * UTC时间转GMT时间
- * @param utcDate 
- * @returns 
+ * @param utcDate
+ * @returns
  */
-export const utcToGmt = (utcDate:Date) => {
+export const utcToGmt = (utcDate: Date) => {
   const timestamp = utcDate.getTime()
   const offset = utcDate.getTimezoneOffset()
   const utcTimestamp = timestamp + offset

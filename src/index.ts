@@ -1,5 +1,5 @@
-import HtmlWebpackPlugin from 'html-webpack-plugin'
-import type { Compilation, Compiler } from 'webpack'
+import type { Compiler, Compilation } from 'webpack'
+import { RawSource } from 'webpack-sources'
 import { getBranchName, getFirstCommitHash8, utcToGmt } from './utils'
 
 export interface WebpackBuildInfo {
@@ -11,6 +11,7 @@ export interface WebpackBuildInfo {
 }
 
 export interface Options {
+  html?: string
   showName?: boolean
   showVersion?: boolean
   nameBlockColor?: string
@@ -34,6 +35,7 @@ const yellow = (str: string) => {
 const padStartZero = (num: number) => num.toString().padStart(2, '0')
 
 class BuildInfoWebpackPlugin {
+  html: string
   showName: boolean
   showVersion: boolean
   nameBlockColor: string
@@ -51,7 +53,9 @@ class BuildInfoWebpackPlugin {
       timeBlockColor = '#09b987',
       showGit = true,
       gitBlockColor = '#e19c0e',
+      html = 'index.html',
     } = Options ?? {}
+    this.html = html
     this.showName = showName
     this.showVersion = showVersion
     this.nameBlockColor = nameBlockColor
@@ -61,64 +65,87 @@ class BuildInfoWebpackPlugin {
     this.gitBlockColor = gitBlockColor
   }
   apply(compiler: Compiler) {
-    let pkg
-    let branchName
-    let firstCommitHash8
-    compiler.hooks.compilation.tap(pluginName, async (compilation: Compilation) => {
-      HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapPromise(pluginName, async (data) => {
-        try {
-          if (!pkg) {
-            pkg = await require(`${compiler.context}/package.json`)
-          }
-          if (!branchName) {
-            branchName = await getBranchName(compiler.context)
-          }
-          if (!firstCommitHash8) {
-            firstCommitHash8 = await getFirstCommitHash8(compiler.context)
-          }
-        } catch (err) {
-          console.log(`${yellow(`WARNING[${pluginName}]: `)}${err.message.split('\n')[0]}`)
+    let buildInfo: WebpackBuildInfo
+
+    compiler.hooks.beforeCompile.tapPromise(pluginName, async () => {
+      let pkg: any
+      let branchName = ''
+      let firstCommitHash8 = ''
+
+      try {
+        if (!pkg) {
+          pkg = await require(`${compiler.context}/package.json`)
+        }
+        if (!branchName) {
+          branchName = await getBranchName(compiler.context)
+        }
+        if (!firstCommitHash8) {
+          firstCommitHash8 = await getFirstCommitHash8(compiler.context)
+        }
+      } catch (err: any) {
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(
+          `${yellow(`WARNING[${pluginName}]: `)}${err.message.split('\n')[0]}`,
+        )
+      }
+
+      const date = utcToGmt(new Date())
+      const time = `${date.getFullYear()}-${padStartZero(
+        date.getMonth() + 1,
+      )}-${padStartZero(date.getDate())} ${padStartZero(
+        date.getHours(),
+      )}:${padStartZero(date.getMinutes())}:${padStartZero(date.getSeconds())}`
+      buildInfo = {
+        name: pkg?.name || pluginName,
+        version: pkg?.version || '',
+        branchName,
+        firstCommitHash8,
+        time,
+      }
+    })
+
+    compiler.hooks.emit.tap(
+      pluginName,
+      async (compilation: Compilation) => {
+        if (!compilation.assets[this.html]) {
+          // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+          console.log(
+            `${yellow(`WARNING[${pluginName}]: `)}未找到${
+              this.html
+            }文件，如果html模板不是index.html，请在options中指定`,
+          )
         }
 
-        const date = utcToGmt(new Date())
-        const time = `${date.getFullYear()}-${padStartZero(date.getMonth() + 1)}-${padStartZero(
-          date.getDate()
-        )} ${padStartZero(date.getHours())}:${padStartZero(date.getMinutes())}:${padStartZero(
-          date.getSeconds()
-        )}`
-        const buildInfo: WebpackBuildInfo = {
-          name: pkg?.name || pluginName,
-          version: pkg?.version || '',
-          branchName,
-          firstCommitHash8,
-          time,
-        }
-        const showGit = this.showGit && (branchName || firstCommitHash8)
+        let htmlContent = compilation.assets[this.html].source() as string
+        const showGit =
+          this.showGit && (buildInfo.branchName || buildInfo.firstCommitHash8)
 
         const msg =
           (this.showName || this.showVersion ? '%c' : '') +
           (this.showName ? buildInfo.name : '') +
           (this.showVersion ? ` v${buildInfo.version}` : '') +
           (this.showTime ? `%c${buildInfo.time}` : '') +
-          (showGit ? `%c${buildInfo.branchName} ${buildInfo.firstCommitHash8}` : '')
+          (showGit
+            ? `%c${buildInfo.branchName} ${buildInfo.firstCommitHash8}`
+            : '')
         const nameBlock = `background: ${this.nameBlockColor}; color: #fff; padding: 2px 4px; border-radius: 3px 0 0 3px;`
         const timeBlock = `background: ${this.timeBlockColor}; color: #fff; padding: 2px 4px;margin-right: -1px;`
         const gitBlock = `background: ${this.gitBlockColor}; color: #fff; padding: 2px 4px; border-radius: 0 3px 3px 0;`
 
-        const logInfo =
-          `'${msg}'` +
-          (this.showName || this.showVersion ? `,'${nameBlock}'` : '') +
-          (this.showTime ? `,'${timeBlock}'` : '') +
-          (showGit ? `,'${gitBlock}'` : '')
-
-        data.html = data.html.replace(
+        const logInfo = `'${msg}'${
+          this.showName || this.showVersion ? `,'${nameBlock}'` : ''
+        }${this.showTime ? `,'${timeBlock}'` : ''}${
+          showGit ? `,'${gitBlock}'` : ''
+        }`
+        htmlContent = htmlContent.replace(
           '</head>',
-          `<script type="text/javascript">var WEBPACK_BUILD_INFO=${JSON.stringify(buildInfo)}; console.log(${logInfo});</script></head>`
+          `<script type="text/javascript">var WEBPACK_BUILD_INFO=${JSON.stringify(
+            buildInfo,
+          )}; console.log(${logInfo});</script></head>`,
         )
-
-        return data
-      })
-    })
+        compilation.assets[this.html] = new RawSource(htmlContent)
+      },
+    )
   }
 }
 
