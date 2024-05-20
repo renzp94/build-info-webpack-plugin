@@ -12,9 +12,10 @@
 
 # @renzp/build-info-webpack-plugin
 
-一款将打包信息打印在控制台的webpack插件
+一款将打包信息打印在控制台的webpack/Rspack插件。
 
 - `Webpack插件`: [build-info-webpack-plugin](https://github.com/renzp94/build-info-webpack-plugin)
+- `Rspack插件`: [build-info-webpack-plugin](https://github.com/renzp94/build-info-webpack-plugin)
 - `Vite插件`: [vite-plugin-build-info](https://github.com/renzp94/vite-plugin-build-info)
 
 ## Install
@@ -32,7 +33,7 @@ npm i @renzp/build-info-webpack-plugin -D
 import BuildInfoWebpackPlugin from '@renzp/build-info-webpack-plugin'
 
 export default {
-    plugins: [new BuildInfoWebpackPlugin()]
+  plugins: [new BuildInfoWebpackPlugin()]
 }
 ```
 
@@ -41,7 +42,29 @@ export default {
 const BuildInfoWebpackPlugin = require('@renzp/build-info-webpack-plugin')
 
 module.exports = {
-    plugins: [new BuildInfoWebpackPlugin.default()]
+  plugins: [new BuildInfoWebpackPlugin.default()]
+}
+```
+
+`rspack.config.js`
+```js
+const BuildInfoWebpackPlugin = require('@renzp/build-info-webpack-plugin')
+
+module.exports = {
+  plugins: [new WebpackPlugin.default()]
+}
+```
+
+`rsbuild.config.ts`
+```js
+import BuildInfoWebpackPlugin from '@renzp/build-info-webpack-plugin'
+
+export default {
+  tools: {
+    rspack: {
+      plugins: [new WebpackPlugin.default()]
+    }
+  }
 }
 ```
 
